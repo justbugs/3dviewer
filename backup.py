@@ -119,15 +119,15 @@ class MainWindow(QMainWindow):
         layout_panel.addWidget(self.lbl_status)
 
         # 3. 模式按钮组
-        btn_view = QPushButton("1. 浏览模式 ")
+        btn_view = QPushButton("1. 浏览模式 (触屏/鼠标)")
         btn_view.clicked.connect(lambda: self.set_mode("view"))
         layout_panel.addWidget(btn_view)
 
-        btn_measure = QPushButton("2. 测距模式 (点选多点)")
+        btn_measure = QPushButton("2. 测距模式 (点选两点)")
         btn_measure.clicked.connect(lambda: self.set_mode("measure"))
         layout_panel.addWidget(btn_measure)
 
-        btn_select = QPushButton("3. 框选模式 ")
+        btn_select = QPushButton("3. 框选模式 (暂未实现)")
         btn_select.clicked.connect(lambda: self.set_mode("select"))
         layout_panel.addWidget(btn_select)
 
@@ -246,25 +246,17 @@ class MainWindow(QMainWindow):
             self._clear_select_visuals()
 
         elif mode == "measure":
-            self.lbl_status.setText("模式: 测距 (单击加点，按住拖拽旋转)")
+            self.lbl_status.setText("模式: 测距 (左键加点 / 右键结束)")
             self.measure_points = []
             self.current_path_actors = []
             
-            # === 核心修复：全方位监听 ===
+            # === 核心修改：添加高优先级监听器 ===
+            # 优先级设为 10.0 (默认是 0)，确保我们先收到消息
+            # 只有 LeftButtonPressEvent，简单直接
+            obs1 = self.plotter.interactor.AddObserver("LeftButtonPressEvent", self.on_measure_click, 10.0)
+            self.measure_observers = [obs1]
             
-            # 1. 按下 (Press) - 优先级 20
-            obs1 = self.plotter.interactor.AddObserver("LeftButtonPressEvent", self.on_measure_press, 20.0)
-            
-            # 2. 松开 (Release) - 优先级 20 (防漏网之鱼)
-            obs2 = self.plotter.interactor.AddObserver("LeftButtonReleaseEvent", self.on_measure_release, 20.0)
-            
-            # 3. 交互结束 (EndInteraction) - 【这是关键！】
-            # 当旋转/拖拽结束时，一定会触发这个，专门解决 Release 被吞的问题
-            obs3 = self.plotter.interactor.AddObserver("EndInteractionEvent", self.on_measure_release, 20.0)
-            
-            self.measure_observers = [obs1, obs2, obs3]
-            
-            # 右键结束保持不变
+            # 右键依然用 PyVista 的封装来结束
             self.plotter.track_click_position(callback=self.on_measure_finish, side='right', viewport=True)
             
         elif mode == "select":
@@ -1043,83 +1035,132 @@ class MainWindow(QMainWindow):
 
     # --- 测距模式专用交互 (解决冲突) ---
 
+    def on_measure_click(self, obj, event):
+        """测距模式点击处理 (点击即加点，并阻止旋转)"""
+        # 再次确认模式 (双重保险)
+        if self.mode != "measure":
+            return
+
+        try:
+            import vtk
+            interactor = self.plotter.interactor
+            click_pos = interactor.GetEventPosition()
+
+            # 1. 拾取点 (使用 PointPicker 抓取点云)
+            picker = vtk.vtkPointPicker()
+            picker.SetTolerance(0.02)
+            picker.Pick(click_pos[0], click_pos[1], 0, self.plotter.renderer)
+
+            final_point = None
+            if picker.GetPointId() != -1:
+                final_point = picker.GetPickPosition()
+            else:
+                # 兜底：如果没点中具体的点，抓一个大概的世界坐标
+                world_picker = vtk.vtkWorldPointPicker()
+                world_picker.Pick(click_pos[0], click_pos[1], 0, self.plotter.renderer)
+                # 检查一下是否真的在相机视野内
+                final_point = world_picker.GetPickPosition()
+
+            if final_point:
+                # 2. 存点与绘制
+                self.measure_points.append(final_point)
+                
+                # 画点
+                point_actor = self.plotter.add_mesh(
+                    pv.PolyData([final_point]), 
+                    color="orange", 
+                    point_size=10, 
+                    render_points_as_spheres=True,
+                    reset_camera=False
+                )
+                self.current_path_actors.append(point_actor)
+                
+                # 画线 (如果有2个点以上)
+                if len(self.measure_points) > 1:
+                    import numpy as np
+                    line = pv.Line(self.measure_points[-2], self.measure_points[-1])
+                    line_actor = self.plotter.add_mesh(
+                        line, 
+                        color="yellow", 
+                        line_width=3,
+                        reset_camera=False
+                    )
+                    self.current_path_actors.append(line_actor)
+                    
+                    dist = np.linalg.norm(np.array(self.measure_points[-1]) - np.array(self.measure_points[-2]))
+                    self.lbl_status.setText(f"新增距离: {dist:.4f} | 总点数: {len(self.measure_points)}")
+                
+                self.plotter.render()
+
+            # === 核心核武器 ===
+            # 打开“中止标志” (AbortFlag)
+            # 这句代码的意思是：“这个点击事件到此为止，别再传给后面的旋转控制器了！”
+            # 这样就完美实现了“点击加点”且“不旋转”。
+            obj.SetAbortFlag(1) 
+
+        except Exception as e:
+            print(f"测距点击异常: {e}")
+
+
     def on_measure_press(self, obj, event):
-        if self.mode != "measure": return 
+        """测距模式 - 左键按下：只记录位置，不加点"""
+        if self.mode != "measure": return
+        # 记录按下时的屏幕坐标 (x, y)
         self.measure_start_pos = self.plotter.interactor.GetEventPosition()
         
         # 注意：这里我们不拦截事件，让 VTK 继续处理（这样相机旋转功能就能生效）
 
     def on_measure_release(self, obj, event):
-        if self.mode != "measure": return
-        if not hasattr(self, 'measure_start_pos') or self.measure_start_pos is None:
+        """测距模式 - 左键松开 (点云专用版)"""
+        # 1. 基本检查
+        if self.mode != "measure" or self.measure_start_pos is None: 
             return
-            
-        # 计算位移
-        end_pos = self.plotter.interactor.GetEventPosition()
+        
+        # 2. 获取松开时的坐标
+        interactor = self.plotter.interactor
+        end_pos = interactor.GetEventPosition()
+        
+        # 3. 计算移动距离
         dx = end_pos[0] - self.measure_start_pos[0]
         dy = end_pos[1] - self.measure_start_pos[1]
         move_dist = (dx**2 + dy**2) ** 0.5
         
+        # 重置起始点
         self.measure_start_pos = None
 
-        # === 判定阈值放宽到 10 像素 ===
-        if move_dist < 10: 
+        # 4. 判断点击 (把容错放大到 10 像素，适应触屏手抖)
+        if move_dist < 10:
             try:
                 import vtk
-                # 尝试拾取点云上的点
+                # === 核心修改：改用 PointPicker ===
+                # PointPicker 会寻找这根射线上最近的“点”，非常适合点云
                 picker = vtk.vtkPointPicker()
-                picker.SetTolerance(0.02)
-                picker.Pick(end_pos[0], end_pos[1], 0, self.plotter.renderer)
                 
-                final_pos = None
+                # 设置容差 (决定了鼠标偏离多少像素还能吸附到点上)
+                # 0.02 是一个比较舒服的经验值
+                picker.SetTolerance(0.02)
+                
+                renderer = self.plotter.renderer
+                picker.Pick(end_pos[0], end_pos[1], 0, renderer)
+                
                 if picker.GetPointId() != -1:
-                    final_pos = picker.GetPickPosition()
+                    # 击中了！获取点的 3D 坐标
+                    pick_pos = picker.GetPickPosition()
+                    self.on_measure_add(pick_pos)
+                    print(f"选中点坐标: {pick_pos}")
                 else:
-                    # 没点中模型，抓个世界坐标兜底
-                    print("DEBUG: [5] 未点中模型，使用空间坐标兜底")
+                    # 如果 PointPicker 没抓到，尝试用 WorldPicker 兜底
+                    # (防止用户点到了两个点中间的空隙)
                     world_picker = vtk.vtkWorldPointPicker()
-                    world_picker.Pick(end_pos[0], end_pos[1], 0, self.plotter.renderer)
-                    final_pos = world_picker.GetPickPosition()
+                    world_picker.Pick(end_pos[0], end_pos[1], 0, renderer)
+                    pick_pos = world_picker.GetPickPosition()
+                    # 只有当抓到的 Z 不为 0 (或其他判断) 才认为是有效点击
+                    # 这里简单粗暴直接加，或者你可以选择不加
+                    self.on_measure_add(pick_pos)
+                    print("触发兜底拾取")
 
-                # 执行加点
-                if final_pos:
-                    self.on_measure_add(final_pos)
             except Exception as e:
-                print(f"DEBUG: 拾取过程报错: {e}")
-        else:
-            print("DEBUG: [4] 判定为拖拽旋转，忽略加点")
-
-
-# 4. 加点：负责画图
-    def on_measure_add(self, point):
-        print(f"DEBUG: [6] 执行画点操作: {point}")
-        
-        # 存入数据
-        self.measure_points.append(point)
-        
-        # 画红点
-        pt_actor = self.plotter.add_mesh(
-            pv.PolyData([point]), 
-            color="red", 
-            point_size=15,          # 足够大
-            render_points_as_spheres=True,
-            reset_camera=False      # 千万别重置相机
-        )
-        self.current_path_actors.append(pt_actor)
-        
-        # 画连线
-        if len(self.measure_points) > 1:
-            line = pv.Line(self.measure_points[-2], self.measure_points[-1])
-            ln_actor = self.plotter.add_mesh(line, color="yellow", line_width=4, reset_camera=False)
-            self.current_path_actors.append(ln_actor)
-            
-            # 计算距离并显示
-            import numpy as np
-            dist = np.linalg.norm(np.array(self.measure_points[-1]) - np.array(self.measure_points[-2]))
-            self.lbl_status.setText(f"距离: {dist:.4f}")
-
-        # === 强制刷新画面 ===
-        self.plotter.render()
+                print(f"拾取失败: {e}")
 
 
 
