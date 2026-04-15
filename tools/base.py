@@ -19,7 +19,11 @@ class BaseTool:
         self.clear_observers()
 
     def clear_observers(self):
-        if self.plotter:
+        if self.plotter and getattr(self.plotter, "interactor", None):
             for obs in self.observers:
-                self.plotter.interactor.RemoveObserver(obs)
+                try:
+                    self.plotter.interactor.RemoveObserver(obs)
+                except Exception:
+                    # Ignore stale/invalid observer ids to keep tool switching stable.
+                    pass
         self.observers = []

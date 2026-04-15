@@ -1,6 +1,5 @@
 import vtk
 import numpy as np
-import open3d as o3d
 import pyvista as pv
 from PySide6.QtCore import QObject, Signal
 from .base import BaseTool
@@ -25,6 +24,7 @@ class CalibrationTool(BaseTool, QObject):
         
         self.is_debug_mode = False
         self.last_mouse_pos = None
+        self.pending_north_deg = 0.0
 
     def activate(self):
         self.is_active = True
@@ -32,6 +32,7 @@ class CalibrationTool(BaseTool, QObject):
 
     def deactivate(self):
         self.is_active = False
+        self._clear_north_preview_transform()
         self.mode = None
         self._clear_visuals()
         self.hide_grid()
@@ -55,7 +56,8 @@ class CalibrationTool(BaseTool, QObject):
     def start_ground_calibration_flow(self):
         self.mode = 'preview_grid'
         self.show_grid()
-        self.view_side() 
+        self.view_side()
+        self.set_interaction_mode('view')
         self.status_message.emit("检查地面是否与网格重合。如需调整，点击[手动校准]")
 
     def start_manual_ground_3pt(self):
@@ -88,7 +90,10 @@ class CalibrationTool(BaseTool, QObject):
             if self.mode == 'manual_ground':
                 style = vtk.vtkInteractorStyleTrackballCamera()
                 self.plotter.interactor.SetInteractorStyle(style)
-                iren.RemoveObservers("LeftButtonPressEvent")
+                try:
+                    iren.RemoveObservers("LeftButtonPressEvent")
+                except Exception:
+                    pass
                 self.observers.append(iren.AddObserver("LeftButtonPressEvent", self.on_click_ground))
             else:
                 self.set_interaction_mode('view')
@@ -115,7 +120,7 @@ class CalibrationTool(BaseTool, QObject):
         v1 = p1 - p0; v2 = p2 - p0
         normal = np.cross(v1, v2)
         if np.linalg.norm(normal) < 1e-6:
-            self.status_message.emit("无效点：共线")
+            self.status_message.emit("无效点：共线或者距离太近")
             return
         normal = normal / np.linalg.norm(normal)
         if normal[2] < 0: normal = -normal 
@@ -142,13 +147,17 @@ class CalibrationTool(BaseTool, QObject):
         self.data_manager.push_history()
         self.mode = 'set_north_draw'
         self.north_p1 = None; self.north_p2 = None
+        self.pending_north_deg = 0.0
+        self._clear_north_preview_transform()
         self._clear_visuals()
         self.view_top()
         style = vtk.vtkInteractorStyleTrackballCamera()
         self.plotter.interactor.SetInteractorStyle(style)
-        self.plotter.interactor.RemoveObservers("LeftButtonPressEvent")
+        try:
+            self.plotter.interactor.RemoveObservers("LeftButtonPressEvent")
+        except Exception:
+            pass
         self.observers.append(self.plotter.interactor.AddObserver("LeftButtonPressEvent", self.on_click_north))
-        self.status_message.emit("【第1步】点击两点：画出当前地图的“北向”")
 
     def on_click_north(self, obj, event):
         if self.mode != 'set_north_draw': return
@@ -177,7 +186,7 @@ class CalibrationTool(BaseTool, QObject):
         c, s = np.cos(angle), np.sin(angle)
         R = np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])
         T = np.eye(4); T[:3, :3] = R
-        self._apply_transform(T, record_history=True)
+        self._apply_transform(T, record_history=False)
 
     def _enter_tuning_mode(self):
         self.mode = 'set_north_tune'
@@ -188,8 +197,11 @@ class CalibrationTool(BaseTool, QObject):
         style = vtk.vtkInteractorStyleTrackballCamera()
         self.plotter.interactor.SetInteractorStyle(style)
         iren = self.plotter.interactor
-        iren.RemoveObservers("LeftButtonPressEvent")
-        iren.RemoveObservers("LeftButtonReleaseEvent")
+        try:
+            iren.RemoveObservers("LeftButtonPressEvent")
+            iren.RemoveObservers("LeftButtonReleaseEvent")
+        except Exception:
+            pass
         self.observers.append(iren.AddObserver("LeftButtonPressEvent", self.on_tune_start))
         self.observers.append(iren.AddObserver("MouseMoveEvent", self.on_tune_move))
         self.observers.append(iren.AddObserver("LeftButtonReleaseEvent", self.on_tune_end))
@@ -217,11 +229,16 @@ class CalibrationTool(BaseTool, QObject):
         curr_pos = self.plotter.interactor.GetEventPosition()
         dx = curr_pos[0] - self.last_mouse_pos[0]
         angle_deg = dx * 0.2
-        self.rotate_by_delta(angle_deg, record_history=False)
+        self.pending_north_deg += angle_deg
+        self._preview_rotate_by_delta(self.pending_north_deg)
         self.last_mouse_pos = curr_pos
     def on_tune_end(self, obj, event):
         self.is_dragging = False; self.last_mouse_pos = None
     def confirm_north(self):
+        if abs(self.pending_north_deg) > 1e-6:
+            self._clear_north_preview_transform()
+            self.rotate_by_delta(self.pending_north_deg, record_history=False)
+            self.pending_north_deg = 0.0
         self.deactivate()
         self.status_message.emit("方向已锁定")
 
@@ -236,8 +253,8 @@ class CalibrationTool(BaseTool, QObject):
         x_size = bounds[1] - bounds[0]
         y_size = bounds[3] - bounds[2]
         
-        # 设为模型最大边长的 2.5 倍，不再是写死的 200
-        grid_size = max(x_size, y_size) * 2.5
+        # 设为模型最大边长的 1.7 倍，不再是写死的 200
+        grid_size = max(x_size, y_size) * 1.7
         
         # 【核心修改】i_resolution=100
         plane = pv.Plane(center=(c[0], c[1], 0), direction=[0,0,1], 
@@ -260,6 +277,31 @@ class CalibrationTool(BaseTool, QObject):
         T = np.eye(4); T[:3, :3] = R
         self._apply_transform(T, record_history)
 
+    def _preview_rotate_by_delta(self, total_angle_deg):
+        actor = getattr(self.canvas, "main_actor", None)
+        if actor is None:
+            return
+        rad = np.deg2rad(total_angle_deg)
+        c, s = np.cos(rad), np.sin(rad)
+        mat = np.eye(4, dtype=np.float64)
+        mat[:3, :3] = np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]], dtype=np.float64)
+        actor.SetUserMatrix(self._to_vtk_matrix(mat))
+        self.plotter.render()
+
+    def _clear_north_preview_transform(self):
+        actor = getattr(self.canvas, "main_actor", None)
+        if actor is None:
+            return
+        actor.SetUserMatrix(None)
+        self.plotter.render()
+
+    def _to_vtk_matrix(self, np_mat4):
+        m = vtk.vtkMatrix4x4()
+        for r in range(4):
+            for c in range(4):
+                m.SetElement(r, c, float(np_mat4[r, c]))
+        return m
+
     def _apply_transform(self, matrix, record_history=False):
         if record_history: self.data_manager.push_history()
         self.accumulated_matrix = matrix @ self.accumulated_matrix
@@ -274,6 +316,14 @@ class CalibrationTool(BaseTool, QObject):
 
     def _pick_point(self, pos):
         picker = vtk.vtkPointPicker()
+        picker.SetPickFromList(True)
+        main_actor = getattr(self.canvas, "main_actor", None)
+        if main_actor is not None:
+            try:
+                picker.InitializePickList()
+                picker.AddPickList(main_actor)
+            except Exception:
+                pass
         picker.Pick(pos[0], pos[1], 0, self.plotter.renderer)
         return picker.GetPickPosition() if picker.GetPointId() != -1 else None
     def _clear_visuals(self):
@@ -295,16 +345,8 @@ class CalibrationTool(BaseTool, QObject):
     def on_pan_start(self, obj, event): self.pan_start_pos = self.plotter.interactor.GetEventPosition()
     def on_pan_move(self, obj, event):
         if not getattr(self, 'pan_start_pos', None): return
+        from tools.pan_utils import perform_pan
         curr = self.plotter.interactor.GetEventPosition()
-        cam = self.plotter.camera
-        pos, foc, up = np.array(cam.GetPosition()), np.array(cam.GetFocalPoint()), np.array(cam.GetViewUp())
-        norm = foc - pos; norm /= np.linalg.norm(norm)
-        right = np.cross(norm, up); right /= np.linalg.norm(right)
-        scale = np.linalg.norm(pos - foc) / 800.0
-        dx, dy = (self.pan_start_pos[0]-curr[0])*scale, (self.pan_start_pos[1]-curr[1])*scale
-        motion = right*dx + up*dy
-        cam.SetPosition(pos+motion); cam.SetFocalPoint(foc+motion)
-        self.plotter.render()
-        self.pan_start_pos = curr
+        self.pan_start_pos = perform_pan(self.plotter, self.pan_start_pos, curr)
     def on_pan_end(self, obj, event): self.pan_start_pos = None
     def get_transform_matrix(self): return self.accumulated_matrix

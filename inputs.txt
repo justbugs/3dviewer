@@ -1,0 +1,4 @@
+E:\3dgs\test\map原始点云.pcd
+E:\3dgs\test\outdoorTexture.ply
+E:\3dgs\test\outdoorTexture0.png
+E:\3dgs\test\point.las

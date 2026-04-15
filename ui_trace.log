@@ -1,0 +1,8 @@
+[TRACE][ActionPanel] on_tool_btn_clicked tool=ref mode=line draw_text=➡️ 定点
+[TRACE][ActionPanel] on_tool_btn_clicked done
+[TRACE][ActionPanel] on_tool_btn_clicked tool=measure mode=perp draw_text=➡️ 选点
+[TRACE][ActionPanel] on_tool_btn_clicked done
+[TRACE][ActionPanel] on_tool_btn_clicked tool=ref mode=line draw_text=➡️ 定点
+[TRACE][ActionPanel] on_tool_btn_clicked done
+[TRACE][ActionPanel] on_tool_btn_clicked tool=measure mode=perp draw_text=➡️ 选点
+[TRACE][ActionPanel] on_tool_btn_clicked done

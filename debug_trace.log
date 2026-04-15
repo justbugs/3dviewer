@@ -1,0 +1,324 @@
+
+=== BOOT ===
+debug logging initialized
+
+=== VTK_REDIRECT ===
+vtk_output=E:\3dgs\3dviewer\vtk_output.log
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x918
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x67
+
+=== WINDOW_SHOW ===
+class=QWidget title= objectName= parent= flags=-2013204479 geo=777,353,640x480
+
+=== WINDOW_SHOW_STACK ===
+  File "E:\3dgs\3dviewer\main.py", line 289, in <module>
+    sys.exit(app.exec())
+  File "E:\3dgs\3dviewer\gui\panels.py", line 764, in _on_tab_changed
+    self.widget_style_width.setVisible(index == 0)
+  File "E:\3dgs\3dviewer\main.py", line 202, in eventFilter
+    stack = "".join(traceback.format_stack(limit=40))
+
+
+=== WINDOW_SUPPRESSED ===
+empty top-level QWidget hidden
+
+=== BOOT ===
+debug logging initialized
+
+=== VTK_REDIRECT ===
+vtk_output=E:\3dgs\3dviewer\vtk_output.log
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x918
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x67
+
+=== BOOT ===
+debug logging initialized
+
+=== BOOT ===
+debug logging initialized
+
+=== VTK_REDIRECT ===
+vtk_output=E:\3dgs\3dviewer\vtk_output.log
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x918
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x67
+
+=== BOOT ===
+debug logging initialized
+
+=== VTK_REDIRECT ===
+vtk_output=E:\3dgs\3dviewer\vtk_output.log
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x918
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x67
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x67
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x67
+
+=== BOOT ===
+debug logging initialized
+
+=== VTK_REDIRECT ===
+vtk_output=E:\3dgs\3dviewer\vtk_output.log
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x918
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x67
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x67
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x67
+
+=== BOOT ===
+debug logging initialized
+
+=== VTK_REDIRECT ===
+vtk_output=E:\3dgs\3dviewer\vtk_output.log
+
+=== BOOT ===
+debug logging initialized
+
+=== VTK_REDIRECT ===
+vtk_output=E:\3dgs\3dviewer\vtk_output.log
+
+=== BOOT ===
+debug logging initialized
+
+=== VTK_REDIRECT ===
+vtk_output=E:\3dgs\3dviewer\vtk_output.log
+
+=== BOOT ===
+debug logging initialized
+
+=== VTK_REDIRECT ===
+vtk_output=E:\3dgs\3dviewer\vtk_output.log
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=4000,575,1600x900
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=4000,575,1600x900
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=4000,575,1600x918
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=4000,575,1600x918
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=4000,575,1600x918
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=3840,532,1920x1009
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=3840,532,1920x1009
+
+=== BOOT ===
+debug logging initialized
+
+=== VTK_REDIRECT ===
+vtk_output=E:\3dgs\3dviewer\vtk_output.log
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=4000,575,1600x900
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=4000,575,1600x900
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=4000,575,1600x918
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=4000,575,1600x918
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=4000,575,1600x918
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=3840,532,1920x1009
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=3840,532,1920x1009
+
+=== BOOT ===
+debug logging initialized
+
+=== VTK_REDIRECT ===
+vtk_output=E:\3dgs\3dviewer\vtk_output.log
+
+=== BOOT ===
+debug logging initialized
+
+=== VTK_REDIRECT ===
+vtk_output=E:\3dgs\3dviewer\vtk_output.log
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x900
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=297,143,1600x900
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x918
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=297,143,1600x918
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x918
+
+=== QT_MESSAGE ===
+[QT][1] DirectWrite: CreateFontFaceFromHDC() failed (指示输入文件 (例如字体文件) 中的错误。) for QFontDef(Family="Fixedsys", stylename=Regular, pointsize=9, pixelsize=16, styleHint=5, weight=400, stretch=100, hintingPreference=0) LOGFONT("Fixedsys", lfWidth=0, lfHeight=-16) dpi=96
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x68
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=0,23,2194x1163
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=0,23,2194x1163
+
+=== QT_MESSAGE ===
+[QT][1] QWindowsWindow::setGeometry: Unable to set geometry 3840x2058+0+40 (frame: 3864x2122-12-12) on QWidgetWindow/"MainWindowClassWindow" on "G7u". Resulting geometry: 3840x2036+0+40 (frame: 3864x2100-12-12) margins: 12, 52, 12, 12 minimum size: 862x1176 MINMAXINFO(maxSize=POINT(x=0, y=0), maxpos=POINT(x=0, y=0), maxtrack=POINT(x=0, y=0), mintrack=POINT(x=1533, y=2122)))
+
+=== QMessageBox ===
+information args=(<gui.main_window.MainWindow(0x236e6e0b2c0) at 0x00000236E69EC4C0>, '提示', '没有可撤回的操作') kwargs={}
+
+=== WINDOW_SHOW ===
+class=QMessageBox title=提示 objectName= parent=MainWindow flags=134230275 geo=1047,590,169x95 text=没有可撤回的操作 info= detail=
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x67
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x67
+
+=== BOOT ===
+debug logging initialized
+
+=== VTK_REDIRECT ===
+vtk_output=E:\3dgs\3dviewer\vtk_output.log
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x900
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=297,143,1600x900
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x918
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=297,143,1600x918
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x918
+
+=== QT_MESSAGE ===
+[QT][1] DirectWrite: CreateFontFaceFromHDC() failed (指示输入文件 (例如字体文件) 中的错误。) for QFontDef(Family="Fixedsys", stylename=Regular, pointsize=9, pixelsize=16, styleHint=5, weight=400, stretch=100, hintingPreference=0) LOGFONT("Fixedsys", lfWidth=0, lfHeight=-16) dpi=96
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x68
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=0,23,2194x1163
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=0,23,2194x1163
+
+=== BOOT ===
+debug logging initialized
+
+=== VTK_REDIRECT ===
+vtk_output=E:\3dgs\3dviewer\vtk_output.log
+
+=== BOOT ===
+debug logging initialized
+
+=== VTK_REDIRECT ===
+vtk_output=E:\3dgs\3dviewer\vtk_output.log
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x900
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=297,143,1600x900
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x918
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=297,143,1600x918
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x918
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x67
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=0,23,2194x1163
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=0,23,2194x1163
+
+=== BOOT ===
+debug logging initialized
+
+=== VTK_REDIRECT ===
+vtk_output=E:\3dgs\3dviewer\vtk_output.log
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x900
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=297,143,1600x900
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x918
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=297,143,1600x918
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=297,143,1600x918
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x67
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2012942335 geo=0,23,2194x1163
+
+=== WINDOW_SHOW ===
+class=MainWindow title=CrashSite3D - Engineering Suite (Touch Optimized) objectName= parent= flags=-2013204479 geo=0,23,2194x1163
+
+=== WINDOW_SHOW ===
+class=QFileDialog title=打开 objectName= parent=MainWindow flags=134230019 geo=0,0,100x30
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x67
+
+=== WINDOW_SHOW ===
+class=QProgressDialog title= objectName= parent=MainWindow flags=134230019 geo=997,571,200x67

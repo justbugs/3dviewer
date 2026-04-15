@@ -11,7 +11,7 @@ from core.processor import GeometryProcessor
 from gui.canvas import PointCloudCanvas
 from gui.panels import ObjectListPanel, ActionPanel
 from tools.measure import MeasureTool
-from tools.select import SelectTool
+from tools.selection_tool import SelectTool 
 from tools.calibration import CalibrationTool 
 
 class MainWindow(QMainWindow):
